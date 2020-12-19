@@ -61,8 +61,13 @@ pub struct Item {
 async fn main() -> Result<(), Error> {
     // Put any one-time initialisation code up here
     // Before lambda::run is called!
+
+    println!("1");
     let func = handler_fn(func);
+    println!("2");
     lambda::run(func).await?;
+    println!("3"); // doesn't get printed
+
     Ok(())
 }
 
