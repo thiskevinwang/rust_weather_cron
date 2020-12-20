@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: NSCoder/rust-musl-action@v1.0.0
     - name: Build
       run: cargo build --release --target x86_64-unknown-linux-musl
 #     - name: Run tests
