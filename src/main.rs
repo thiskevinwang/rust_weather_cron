@@ -62,19 +62,25 @@ async fn main() -> Result<(), Error> {
     dotenv().ok();
     // Put any one-time initialisation code up here
     // Before lambda::run is called!
+    println!("Lambda starting");
     let func = handler_fn(func);
-    lambda::run(func).await?;
+    let _ = lambda::run(func).await.unwrap();
+    println!("Lambda finished");
 
     Ok(())
 }
 
 async fn func(_: Value, _: Context) -> Result<(), Error> {
+    println!("func...");
     let location_id = "2171775";
-    let api_key = env::var("API_KEY")?;
+    let api_key = env::var("API_KEY").unwrap();
 
     let url = format!("http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/{location_id}?apikey={api_key}", location_id=location_id, api_key=api_key);
-    let resp = reqwest::get(&url).await?;
-    let json = resp.json::<Vec<Forecast>>().await?;
+    println!("Request start: {}", &url);
+    let resp = reqwest::get(&url).await.unwrap();
+    println!("Request finished");
+
+    let json = resp.json::<Vec<Forecast>>().await.unwrap();
 
     let client = DynamoDbClient::new(Region::UsEast1);
 
@@ -86,13 +92,16 @@ async fn func(_: Value, _: Context) -> Result<(), Error> {
         forecasts: json,
     };
 
+    println!("Writing to DynamoDB");
     client
         .put_item(PutItemInput {
             table_name: "weather".to_string(),
             item: serde_dynamodb::to_hashmap(&put_item)?,
             ..Default::default()
         })
-        .await?;
+        .await
+        .unwrap();
+    println!("Write complete!");
 
     Ok(())
 }
