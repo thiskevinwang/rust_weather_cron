@@ -1,3 +1,11 @@
 /target
 .env
 *.zip
+
+.DS_Store
+lambda.zip
+cdk.out
+
+node_modules
+benchmark/trace-summaries.json
+benchmark/traces.json
