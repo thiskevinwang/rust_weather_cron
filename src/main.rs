@@ -59,21 +59,16 @@ pub struct Item {
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
+    dotenv().ok();
     // Put any one-time initialisation code up here
     // Before lambda::run is called!
-
-    println!("1");
     let func = handler_fn(func);
-    println!("2");
     lambda::run(func).await?;
-    println!("3"); // doesn't get printed
 
     Ok(())
 }
 
 async fn func(_: Value, _: Context) -> Result<(), Error> {
-    dotenv().ok();
-
     let location_id = "2171775";
     let api_key = env::var("API_KEY")?;
 
