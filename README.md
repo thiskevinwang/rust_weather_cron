@@ -1,3 +1,18 @@
+# Deployment
+
+Currently, the deploy process is manual, but does leverage infrastructure-as-code
+
+```bash
+# build the binary
+cargo build --release --target x86_64-unknown-linux-musl
+
+# zip it up, so that aws-cdk TS code can point to it
+zip -j rust.zip ./target/x86_64-unknown-linux-musl/release/bootstrap
+
+# deploy with aws-cdk
+cdk deploy
+```
+
 # Errors
 
 ## TS error
